@@ -21,7 +21,7 @@ export default function Home() {
   //frontend |
   return (
     <main className="">
-      <div className="flex justify-center items-center">gay</div>
+      <div className="flex justify-center items-center">hello</div>
     </main>
   );
 }
