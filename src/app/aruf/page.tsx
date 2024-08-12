@@ -156,6 +156,7 @@ const App = () => {
                 </div>
               </div>
             </Link>
+            <Link href={'Temperature'}>
             <div className={styles.card}>
               <p className={styles.cardTitle}>Temperature</p>
               <p className={styles.smallDesc}>
@@ -166,6 +167,7 @@ const App = () => {
                 <div className={styles.goArrow}>→</div>
               </div>
             </div>
+            </Link>
             <div className={styles.card}>
               <p className={styles.cardTitle}>Wind Speed</p>
               <p className={styles.smallDesc}>

@@ -5,76 +5,82 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import * as d3 from 'd3';
 
-const Page = ({ selectedRegion }) => {
-  const mapRef = useRef(null);
+interface PageProps {
+  selectedRegion: string;
+}
+
+const Page: React.FC<PageProps> = ({ selectedRegion }) => {
+  const mapRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
-    if (mapRef.current) return;
+    if (mapRef.current) return; // Prevent re-initializing the map
 
     const map = L.map('map').setView([1.3521, 103.8198], 11);
+    mapRef.current = map;
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
     }).addTo(map);
 
-    function getColor(temperature) {
-      return temperature > 36 ? '#FF0000' : // Extreme heat
-             temperature > 34 ? '#FF5722' : // High heat
-             temperature > 32 ? '#FF8A65' : // Moderate heat
-             temperature > 30 ? '#FFCCBC' : // Mild heat
-                                '#FFE0B2';  // Normal
-    }
+    const getColor = (name: string) => {
+      switch (name) {
+        case 'Admiralty':
+          return '#8B0000'; // Dark Red
+        case 'Sentosa Island':
+          return '#FF8C00'; // Dark Orange
+        default:
+          return '#228B22'; // Green
+      }
+    };
 
-    function style(feature) {
-      return {
-        fillColor: getColor(feature.properties.temperature),
-        weight: 2,
-        opacity: 1,
-        color: 'white',
-        dashArray: '3',
-        fillOpacity: 0.7,
-      };
-    }
+    const style = (feature: any) => ({
+      fillColor: getColor(feature.properties.name),
+      weight: 3, // Increase line weight for better visibility
+      opacity: 1,
+      color: 'white',
+      dashArray: '3',
+      fillOpacity: 0.7,
+    });
 
-    function highlightFeature(e) {
+    const highlightFeature = (e: L.LeafletMouseEvent) => {
       const layer = e.target;
 
       layer.setStyle({
         weight: 5,
         color: '#666',
         dashArray: '',
-        fillOpacity: 0.7
+        fillOpacity: 0.7,
       });
 
       if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
         layer.bringToFront();
       }
-    }
+    };
 
-    function resetHighlight(e) {
+    const resetHighlight = (e: L.LeafletMouseEvent) => {
       geojson.resetStyle(e.target);
-    }
+    };
 
-    function zoomToFeature(e) {
+    const zoomToFeature = (e: L.LeafletMouseEvent) => {
       map.fitBounds(e.target.getBounds());
-    }
+    };
 
-    let geojson;
+    let geojson: L.GeoJSON;
 
-    // Updated path to the GeoJSON file
+    // Load GeoJSON data
     d3.json('/singapore_localities.geojson').then((data) => {
-      geojson = L.geoJson(data, {
-        style: style,
+      geojson = L.geoJSON(data, {
+        style,
         onEachFeature: (feature, layer) => {
           layer.on({
             mouseover: highlightFeature,
             mouseout: resetHighlight,
-            click: zoomToFeature
+            click: zoomToFeature,
           });
 
           layer.bindPopup(`${feature.properties.name}: ${feature.properties.temperature}°C`);
 
-          // Check if this is the selected region
+          // Automatically highlight and zoom to the selected region
           if (feature.properties.name === selectedRegion) {
             setTimeout(() => {
               layer.openPopup();
@@ -82,16 +88,14 @@ const Page = ({ selectedRegion }) => {
               zoomToFeature({ target: layer });
             }, 100);
           }
-        }
+        },
       }).addTo(map);
     });
-
-    mapRef.current = map;
   }, [selectedRegion]);
 
   return (
-    <div>
-      <h1>Choropleth Map of Singapore</h1>
+    <div className=''>
+      <h1 className='px-4'>Choropleth Map of Singapore</h1>
       <div id="map" style={{ width: '100%', height: '600px' }}></div>
     </div>
   );
