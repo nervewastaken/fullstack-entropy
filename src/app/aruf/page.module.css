@@ -1,0 +1,239 @@
+.page {
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 60%), url('/chennai.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  border: 2px solid #ccc; /* Add border */
+}
+
+.sidebar {
+  background-color: #8b812900; /* Softer yellow */
+  width: 60px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.016);
+  z-index: 1000;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: width 0.3s;
+  border-right: 2px solid #ccc; /* Add border to the right side */
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 24px;
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: -30px; /* Adjust position based on the sidebar width */
+  transition: right 0.3s;
+  border: 2px solid #ccc; /* Add border */
+}
+
+.navList {
+  list-style: none;
+  padding: 20px 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid #ccc; /* Add border */
+}
+
+.navItem {
+  margin-bottom: 20px;
+  transition: background 0.3s;
+  border: 2px solid #ccc; /* Add border */
+}
+
+.navItem.active {
+  background-color: #ddd; /* Background color for active state */
+  border-radius: 50%;
+}
+
+.navLink {
+  color: #333;
+  text-decoration: none;
+  font-size: 24px;
+  display: block;
+  transition: color 0.3s ease;
+  border: 2px solid #ccc; /* Add border */
+  padding: 5px; /* Add padding to avoid border overlap */
+}
+
+.navLink:hover {
+  color: #555; /* Darker color on hover */
+}
+
+.content {
+  margin-left: 60px; /* Leave space for sidebar */
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center align content */
+  border: 2px solid #d02f2f; /* Add border */
+  padding-top: 30px;
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: row; /* Align items horizontally */
+  align-items: flex-start; /* Align items to the top */
+  gap: 20px; /* Space between image and cards */
+  width: 100%;
+  border: 2px solid #2e1bd9; /* Add border */
+}
+
+.imageContainer {
+  text-align: center; /* Center align image */
+  border: 2px solid #000000; /* Add border */
+  height: 100%;
+  flex-direction: column;
+  display: flex;
+  gap: 20px;
+  width: 300%;
+}
+
+.image {
+  width: 80%;
+ /* Adjust as needed */
+  border-radius: 12px; /* Rounded corners */
+  border: 2px solid #4be920; /* Add border */
+}
+
+.cardsContainer {
+  display: flex;
+  flex-direction: column; /* Stack cards vertically */
+  gap: 20px;
+  width: 80%; /* Ensure cards container takes up full width */
+  border: 2px solid #e41f1f; /* Add border */
+}
+
+.card {
+  position: relative;
+  background: #ffffff; /* White background for cards */
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%; /* Ensure cards take up full width of container */
+  border: 2px solid #ccc; /* Add border */
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Slight lift on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.cardTitle {
+  color: #333;
+  font-size: 1.4em;
+  font-weight: 600;
+  margin-bottom: 0.5em;
+  border-bottom: 2px solid #ccc; /* Add bottom border */
+}
+
+.smallDesc {
+  font-size: 0.9em;
+  font-weight: 300;
+  line-height: 1.5em;
+  color: #666; /* Subtle color for description */
+  border-top: 2px solid #ccc; /* Add top border */
+  padding-top: 10px; /* Add padding to avoid border overlap */
+}
+
+.goCorner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 2.5em;
+  height: 2.5em;
+  overflow: hidden;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(135deg, #3498db, #2ecc71); /* New gradient */
+  border-radius: 50%; /* Circular shape */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border: 2px solid #ccc; /* Add border */
+}
+
+.goArrow {
+  color: #fff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.2em;
+  margin: 0;
+}
+
+.graphContainer {
+  text-align: center; /* Center align graph */
+  margin-top: 20px; /* Space above the graph */
+  border: 2px solid #ccc; /* Add border */
+}
+
+.graphTitle {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #ccc; /* Add bottom border */
+}
+
+.sampleGraph {
+  width: 100%;
+  height: 200px;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid #ccc; /* Add border */
+}
+
+.placeholderGraph {
+  width: 100%;
+  height: 100%;
+  background-color: #dcdcdc;
+  border-radius: 12px;
+  border: 2px solid #ccc; /* Add border */
+}
+.box {
+  width: 50%;
+  height: 150px;
+  background-color: #f0f0f0;
+  border: 2px solid #000000;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: left; /* Ensure content is left-aligned */
+}
+
+.boxheading {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+  text-align: left; /* Left-align the heading */
+}
+
+.boxdescription {
+  margin: 0;
+  font-size: 0.9em;
+  color: #555;
+  text-align: left; /* Left-align the description */
+}
+
+
+
+.below{
+  display: flex;
+  flex-direction: row; /* Stack cards vertically */
+  gap: 20px;
+  width: 100%; /* Ensure cards container takes up full width */
+  border: 2px solid #e41f1f; /* Add border */
+}
