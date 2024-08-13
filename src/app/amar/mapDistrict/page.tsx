@@ -156,6 +156,7 @@ const Page: React.FC = () => {
           }}
         >
           <div
+            className="px-4"
             style={{
               width: "30px",
               height: "5px",

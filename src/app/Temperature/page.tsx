@@ -1,4 +1,5 @@
 "use client";
+import "./page.css";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -18,6 +19,7 @@ const Page = () => {
   const [anomaliesData, setAnomaliesData] = useState([]);
   const [error, setError] = useState(null);
   const [district, setSelectedDistrict] = useState("");
+  const [loading, setLoading] = useState(true); // State to manage loading
 
   useEffect(() => {
     const selectedDistrict = localStorage.getItem("District");
@@ -26,6 +28,7 @@ const Page = () => {
       fetchStationAnomalies(selectedDistrict);
     } else {
       setError("No district selected or invalid district");
+      setLoading(false); // Stop loading if there's an error
     }
   }, []);
 
@@ -48,6 +51,8 @@ const Page = () => {
     } catch (error) {
       console.error("Error fetching anomalies data:", error);
       setError(error.message);
+    } finally {
+      setLoading(false); // Stop loading after data is fetched
     }
   };
 
@@ -87,38 +92,76 @@ const Page = () => {
     return null;
   };
 
-  return (
-    <div className="p-8 font-sans">
-      <h1 className="text-3xl text-center mb-8 font-bold">
-        {district} Temperature Anomalies
-      </h1>
-      {error && <p className="text-red-500 font-semibold">Error: {error}</p>}
+  const anomalyCards = anomaliesData
+    .filter((item) => item.anomaly === -1)
+    .map((item, index) => (
+      <div
+        key={index}
+        className="bg-white shadow-md rounded-lg p-4 mb-4 flex flex-col"
+        style={{ flex: "1 1 30%", margin: "10px" }}
+      >
+        <h3 className="text-lg font-bold mb-2">Anomaly Detected</h3>
+        <p>
+          <strong>Date:</strong> {item.date}
+        </p>
+        <p>
+          <strong>Max Temp:</strong> {item.max_temp}°C
+        </p>
+        <p>
+          <strong>Station:</strong> {item.station}
+        </p>
+      </div>
+    ));
 
-      {anomaliesData.length > 0 && (
-        <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={anomaliesData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="date"
-              label={{
-                value: "Date",
-                position: "insideBottomRight",
-                offset: 0,
-              }}
-              tick={false}
-            />
-            <YAxis />
-            <Tooltip content={customTooltip} />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="max_temp"
-              stroke="#8884d8"
-              activeDot={{ r: 8 }}
-              dot={renderCustomizedDot}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+  return (
+    <div className="">
+      {loading ? (
+        <div className="w-full h-screen flex justify-center items-center">
+          <div className="loader">
+            <span></span>
+          </div>
+        </div>
+      ) : (
+        <div className="px-10">
+          <h1 className="text-3xl text-center mb-8 font-bold ">
+            {district} Temperature Anomalies
+          </h1>
+        
+          {error && (
+            <p className="text-red-500 font-semibold">Error: {error}</p>
+          )}
+
+          {anomaliesData.length > 0 && (
+            <>
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={anomaliesData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="date"
+                    label={{
+                      value: "Date",
+                      position: "insideBottomRight",
+                      offset: 0,
+                    }}
+                    tick={false}
+                  />
+                  <YAxis />
+                  <Tooltip content={customTooltip} />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="max_temp"
+                    stroke="#8884d8"
+                    activeDot={{ r: 8 }}
+                    dot={renderCustomizedDot}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+
+              <div className="flex flex-wrap mt-8">{anomalyCards}</div>
+            </>
+          )}
+        </div>
       )}
     </div>
   );

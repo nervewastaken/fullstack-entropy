@@ -10,6 +10,40 @@ import {
   faPhone,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import Image from "next/image";
+
+const districtInfo = {
+  Admiralty: {
+    weather:
+      "Admiralty generally experiences warm weather year-round with occasional showers. Temperatures range from 24°C to 32°C.",
+    description:
+      "Admiralty is known for its consistent tropical climate with occasional rain showers, especially during the monsoon seasons.",
+  },
+  "Sentosa Island": {
+    weather:
+      "Sentosa Island enjoys a tropical climate with temperatures ranging between 25°C and 31°C. It's a bit more humid compared to other regions due to its coastal location.",
+    description:
+      "Sentosa Island is typically warm and humid throughout the year. Being a coastal area, it experiences slightly cooler temperatures during the evenings.",
+  },
+  "Jurong (West)": {
+    weather:
+      "Jurong West experiences a warm and humid climate year-round. Expect temperatures from 24°C to 33°C with higher humidity levels.",
+    description:
+      "Jurong West is one of the warmer regions in Singapore, with high humidity and regular rainfall, particularly during the northeast monsoon season.",
+  },
+  Newton: {
+    weather:
+      "Newton has a warm climate with temperatures averaging between 24°C and 31°C. It receives moderate rainfall throughout the year.",
+    description:
+      "Newton's weather is generally warm with regular rainfall, making it a typical example of Singapore’s tropical rainforest climate.",
+  },
+  Changi: {
+    weather:
+      "Changi is known for its relatively cooler temperatures ranging from 23°C to 30°C due to its proximity to the sea. The area also experiences frequent rain showers.",
+    description:
+      "Changi, being close to the coast, has a more temperate climate with cooler temperatures and higher wind speeds compared to inland areas.",
+  },
+};
 
 const Page = ({ params }) => {
   const { dist } = params;
@@ -25,6 +59,8 @@ const Page = ({ params }) => {
       setDecodedDistrict(decodedValue);
     }
   }, [dist]);
+
+  const districtData = districtInfo[decodedDistrict];
 
   console.log(decodedDistrict);
 
@@ -74,13 +110,23 @@ const Page = ({ params }) => {
       <div className={styles.content}>
         <div className={styles.mainContainer}>
           <div className={styles.imageContainer}>
-            <img src="/01.jpg" alt="Sample" className={styles.image} />
+            <Image
+              src="/NightSing.png"
+              alt="Sample"
+              className={styles.image}
+              width={600}
+              height={1000}
+            />
 
             <div className={styles.below}>
               <div className={styles.textContainer}>
                 <h1 className={styles.heading}>{decodedDistrict}</h1>
                 <p className={styles.description}>
-                  {decodedDistrict} - Dashboard for your district
+                  {districtData ? districtData.description : ""} - Dashboard for
+                  your district
+                </p>
+                <p className={styles.weatherInfo}>
+                  Weather: {districtData ? districtData.weather : ""}
                 </p>
               </div>
             </div>
@@ -116,7 +162,7 @@ const Page = ({ params }) => {
               <div className={styles.card}>
                 <p className={styles.cardTitle}>Maps</p>
                 <p className={styles.smallDesc}>
-                  Click here for to view district health
+                  Click here to view district health.
                 </p>
                 <div className={styles.goCorner}>
                   <div className={styles.goArrow}>→</div>
