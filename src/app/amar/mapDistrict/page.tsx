@@ -93,7 +93,7 @@ const Page: React.FC<PageProps> = ({ selectedRegion }) => {
       }).addTo(map);
     });
 
-    // Transition effect: zoom out completely, then zoom into Changi after 5 seconds
+    // Transition effect: zoom out completely, then zoominto Changi after 5 seconds
     setTimeout(() => {
       map.flyTo([1.3644, 103.9915], 13, { duration: 2 }); // Fly to Changi with a zoom level of 13
     }, 1000); 
@@ -106,11 +106,41 @@ const Page: React.FC<PageProps> = ({ selectedRegion }) => {
   }, [selectedRegion]);
 
   return (
-    <div className=''>
-      <h1 className='px-4'>Choropleth Map of Singapore</h1>
-      <div><div id="map" style={{ width: '100%', height: '600px' }}></div>
-      </div>
-    </div>
+    <div style={{ textAlign: 'center', margin: '20px 0' }}>
+  <h1 style={{ 
+    padding: '10px 20px', 
+    fontSize: '1.5rem', 
+    fontWeight: 'bold', 
+    color: '#333', 
+    backgroundColor: 'white', 
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    maxWidth: '600px',
+    margin: '0 auto'
+  }}>
+    Choropleth Map of Singapore
+  </h1>
+  <div style={{ width: '100%', height: '600px', marginTop: '20px', border: '2px solid grey' }}>
+  <div id="map" style={{ width: '100%', height: '100%' }}></div>
+</div>
+
+  <div style={{ textAlign: 'left', margin: '20px 0', fontSize: '1rem', color: '#333' }}>
+  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+    <div style={{ width: '30px', height: '5px', backgroundColor: 'red', marginRight: '10px' }}></div>
+    <span>Extreme Heat Zone</span>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+    <div style={{ width: '30px', height: '5px', backgroundColor: 'orange', marginRight: '10px' }}></div>
+    <span>Moderate Heat Zone</span>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ width: '30px', height: '5px', backgroundColor: 'green', marginRight: '10px' }}></div>
+    <span>Thermally Stable Zone</span>
+  </div>
+</div>
+
+</div>
+
   );
 };
 
