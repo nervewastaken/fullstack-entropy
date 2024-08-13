@@ -10,35 +10,23 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Dot,
 } from "recharts";
+import moment from "moment";
 
 const Page = () => {
-  const [admiraltyData, setAdmiraltyData] = useState(null);
-  const [sentosaData, setSentosaData] = useState(null);
-  const [admiraltyAnomalies, setAdmiraltyAnomalies] = useState(null);
-  const [sentosaAnomalies, setSentosaAnomalies] = useState(null);
+  const [anomaliesData, setAnomaliesData] = useState({});
   const [error, setError] = useState(null);
 
-  const fetchStationData = async (station, setData) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/get_station_data?station=${station}`
-      );
+  const sectors = [
+    "Admiralty",
+    "Sentosa Island",
+    "Jurong (West)",
+    "Newton",
+    "Changi",
+  ];
 
-      if (response.ok) {
-        const jsonData = await response.json();
-        setData(jsonData);
-      } else {
-        console.log("Request failed with status", response.status);
-        setError(new Error(`Request failed with status ${response.status}`));
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setError(error);
-    }
-  };
-
-  const fetchStationAnomalies = async (station, setAnomalies) => {
+  const fetchStationAnomalies = async (station) => {
     try {
       const response = await fetch(
         `http://localhost:8080/get_station_anomalies?station=${station}`
@@ -46,10 +34,16 @@ const Page = () => {
 
       if (response.ok) {
         const jsonData = await response.json();
-        setAnomalies(jsonData);
+        const cleanedData = jsonData.map((item) => ({
+          ...item,
+          date: moment(item.date).format("YYYY-MM-DD"),
+        }));
+        setAnomaliesData((prevState) => ({
+          ...prevState,
+          [station]: cleanedData,
+        }));
       } else {
         console.log("Request failed with status", response.status);
-        setError(new Error(`Request failed with status ${response.status}`));
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -58,108 +52,81 @@ const Page = () => {
   };
 
   useEffect(() => {
-    fetchStationData("Admiralty", setAdmiraltyData);
-    fetchStationData("Sentosa Island", setSentosaData);
-    fetchStationAnomalies("Admiralty", setAdmiraltyAnomalies);
-    fetchStationAnomalies("Sentosa Island", setSentosaAnomalies);
+    sectors.forEach((sector) => {
+      fetchStationAnomalies(sector);
+    });
   }, []);
+
+  const renderCustomizedDot = (props) => {
+    const { cx, cy, payload } = props;
+
+    if (payload.anomaly === -1) {
+      return <Dot cx={cx} cy={cy} r={5} fill="red" stroke="none" />;
+    }
+    return null;
+  };
+
+  const customTooltip = ({ active, payload }) => {
+    if (
+      active &&
+      payload &&
+      payload.length &&
+      payload[0].payload.anomaly === -1
+    ) {
+      const { date, max_temp } = payload[0].payload;
+      return (
+        <div
+          className="custom-tooltip"
+          style={{
+            backgroundColor: "white",
+            padding: "5px",
+            border: "1px solid #ccc",
+          }}
+        >
+          <p className="label">{`Anomaly Detected`}</p>
+          <p className="intro">{`Date: ${date}`}</p>
+          <p className="desc">{`Max Temp: ${max_temp}°C`}</p>
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <div>
-      <h1>Station Data</h1>
+      <h1>Temperature Anomalies Across Sectors</h1>
       {error && <p>Error: {error.message}</p>}
 
-      {admiraltyData && sentosaData ? (
-        <>
-          <h2>Admiralty Forecast Data</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Year</th>
-                <th>Month</th>
-                <th>Temperature</th>
-                <th>Station</th>
-              </tr>
-            </thead>
-            <tbody>
-              {admiraltyData.map((row, index) => (
-                <tr key={index}>
-                  <td>{row.year}</td>
-                  <td>{row.month}</td>
-                  <td>{row.temp}</td>
-                  <td>{row.station}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <h2>Sentosa Island Forecast Data</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Year</th>
-                <th>Month</th>
-                <th>Temperature</th>
-                <th>Station</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sentosaData.map((row, index) => (
-                <tr key={index}>
-                  <td>{row.year}</td>
-                  <td>{row.month}</td>
-                  <td>{row.temp}</td>
-                  <td>{row.station}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <h2>Admiralty Temperature Anomalies</h2>
-          {admiraltyAnomalies ? (
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={admiraltyAnomalies}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="max_temp"
-                  stroke="#8884d8"
-                  activeDot={{ r: 8 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          ) : (
-            <p>Loading Admiralty anomaly data...</p>
-          )}
-
-          <h2>Sentosa Island Temperature Anomalies</h2>
-          {sentosaAnomalies ? (
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={sentosaAnomalies}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="max_temp"
-                  stroke="#82ca9d"
-                  activeDot={{ r: 8 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          ) : (
-            <p>Loading Sentosa Island anomaly data...</p>
-          )}
-        </>
-      ) : (
-        <p>Loading data...</p>
-      )}
+      {sectors.map((sector) => (
+        <div key={sector}>
+          <h2>{sector} Temperature Anomalies</h2>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={anomaliesData[sector]}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="date"
+                label={{
+                  value: "Date",
+                  position: "insideBottomRight",
+                  offset: 0,
+                }}
+                tick={false}
+              />
+              <YAxis />
+              <Tooltip content={customTooltip} />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="max_temp"
+                stroke="#8884d8"
+                activeDot={{ r: 8 }}
+                dot={renderCustomizedDot}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      ))}
     </div>
   );
 };
