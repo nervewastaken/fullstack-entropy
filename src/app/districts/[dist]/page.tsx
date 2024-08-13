@@ -111,6 +111,18 @@ const Page = ({ params }) => {
                 </div>
               </div>
             </Link>
+
+            <Link href="/amar/mapDistrict">
+              <div className={styles.card}>
+                <p className={styles.cardTitle}>Maps</p>
+                <p className={styles.smallDesc}>
+                  Click here for to view district health
+                </p>
+                <div className={styles.goCorner}>
+                  <div className={styles.goArrow}>→</div>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
