@@ -29,7 +29,7 @@ const Page: React.FC<PageProps> = ({ selectedRegion }) => {
         case 'Sentosa Island':
           return '#FF8C00'; // Dark Orange
         case 'Changi':
-          return '#1E90FF'; // Dodger Blue
+          return '#228B22'; // Dodger Blue
         default:
           return '#228B22'; // Green
       }
@@ -58,7 +58,6 @@ const Page: React.FC<PageProps> = ({ selectedRegion }) => {
         layer.bringToFront();
       }
     };
-
     const resetHighlight = (e: L.LeafletMouseEvent) => {
       geojson.resetStyle(e.target);
     };
@@ -97,7 +96,7 @@ const Page: React.FC<PageProps> = ({ selectedRegion }) => {
     // Transition effect: zoom out completely, then zoom into Changi after 5 seconds
     setTimeout(() => {
       map.flyTo([1.3644, 103.9915], 13, { duration: 2 }); // Fly to Changi with a zoom level of 13
-    }, 1000); // Delay of 5 seconds
+    }, 1000); 
     // map.flyTo([1.4406, 103.8005], 13, { duration: 2 }); // Admiralty
     // map.flyTo([1.3473, 103.7094], 13, { duration: 2 }); // Jurong West
     // map.flyTo([1.3138, 103.8362], 13, { duration: 2 }); // Newton
@@ -109,7 +108,8 @@ const Page: React.FC<PageProps> = ({ selectedRegion }) => {
   return (
     <div className=''>
       <h1 className='px-4'>Choropleth Map of Singapore</h1>
-      <div id="map" style={{ width: '100%', height: '600px' }}></div>
+      <div><div id="map" style={{ width: '100%', height: '600px' }}></div>
+      </div>
     </div>
   );
 };
