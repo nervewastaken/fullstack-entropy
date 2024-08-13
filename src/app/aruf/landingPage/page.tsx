@@ -1,9 +1,23 @@
 'use client'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Page = () => {
+  const [typedText, setTypedText] = useState('');
+  const fullText = "We'll tell you when you need an umbrella!";
+
+  useEffect(() => {
+    let index = 0;
+    const typingInterval = setInterval(() => {
+      setTypedText(fullText.slice(0, index + 1));
+      index++;
+      if (index === fullText.length) {
+        clearInterval(typingInterval);
+      }
+    }, 100); // Adjust typing speed by changing the interval
+  }, []);
+
   return (
     <div style={{ backgroundColor: 'white', height: '100vh', overflowX: 'hidden', position: 'relative' }}>
       <div style={{ 
@@ -62,7 +76,23 @@ const Page = () => {
       }}>
         AeroAura
       </div>
-      <div>We'll tell you when you need an umbrella!</div>
+
+      {/* Typing Text */}
+      <div style={{ 
+        position: 'absolute', 
+        top: '50vh', 
+        left: '10%', 
+        zIndex: 3, 
+        fontSize: '2rem', 
+        color: '#333', 
+        fontFamily: 'monospace',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        borderRight: '2px solid orange', 
+        animation: 'blink-caret 0.75s step-end infinite'
+      }}>
+        {typedText}
+      </div>
 
       <Carousel style={{ marginTop: '80vh', padding: '0 10%', zIndex: 3 }}>
         <Carousel.Item interval={3000}>
@@ -119,6 +149,15 @@ const Page = () => {
           }
           to {
             opacity: 1;
+          }
+        }
+
+        @keyframes blink-caret {
+          from, to {
+            border-color: transparent;
+          }
+          50% {
+            border-color: orange;
           }
         }
       `}</style>
