@@ -15,7 +15,7 @@ const Page: React.FC<PageProps> = ({ selectedRegion }) => {
   useEffect(() => {
     if (mapRef.current) return; // Prevent re-initializing the map
 
-    const map = L.map('map').setView([1.3521, 103.8198], 11);
+    const map = L.map('map').setView([1.3521, 103.8198], 2); // Start with extreme zoom out
     mapRef.current = map;
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -28,6 +28,8 @@ const Page: React.FC<PageProps> = ({ selectedRegion }) => {
           return '#8B0000'; // Dark Red
         case 'Sentosa Island':
           return '#FF8C00'; // Dark Orange
+        case 'Changi':
+          return '#1E90FF'; // Dodger Blue
         default:
           return '#228B22'; // Green
       }
@@ -91,6 +93,17 @@ const Page: React.FC<PageProps> = ({ selectedRegion }) => {
         },
       }).addTo(map);
     });
+
+    // Transition effect: zoom out completely, then zoom into Changi after 5 seconds
+    setTimeout(() => {
+      map.flyTo([1.3644, 103.9915], 13, { duration: 2 }); // Fly to Changi with a zoom level of 13
+    }, 1000); // Delay of 5 seconds
+    // map.flyTo([1.4406, 103.8005], 13, { duration: 2 }); // Admiralty
+    // map.flyTo([1.3473, 103.7094], 13, { duration: 2 }); // Jurong West
+    // map.flyTo([1.3138, 103.8362], 13, { duration: 2 }); // Newton
+    // map.flyTo([1.2494, 103.8303], 13, { duration: 2 }); // Sentosa Island
+
+
   }, [selectedRegion]);
 
   return (
