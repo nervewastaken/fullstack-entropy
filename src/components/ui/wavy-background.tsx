@@ -61,15 +61,13 @@ export const WavyBackground = ({
     render();
   };
 
-  // Update the waveColors array to use orange and red colors
   const waveColors = colors ?? [
+    "#FFA500", // Orange
+    "#FFD700", // Gold
     "#FF4500", // OrangeRed
-    "#FF6347", // Tomato
-    "#FF7F50", // Coral
-    "#FF8C00", // DarkOrange
-    "#FF0000", // Red
+    "#FFA07A", // LightSalmon
+    "#FFFF00", // Yellow
   ];
-
   const drawWave = (n: number) => {
     nt += getSpeed();
     for (i = 0; i < n; i++) {
@@ -87,7 +85,7 @@ export const WavyBackground = ({
 
   let animationId: number;
   const render = () => {
-    ctx.fillStyle = backgroundFill || "black";
+    ctx.fillStyle = backgroundFill || "white";
     ctx.globalAlpha = waveOpacity || 0.5;
     ctx.fillRect(0, 0, w, h);
     drawWave(5);
@@ -103,7 +101,7 @@ export const WavyBackground = ({
 
   const [isSafari, setIsSafari] = useState(false);
   useEffect(() => {
-    // I'm sorry but I have got to support it on safari.
+    // I'm sorry but i have got to support it on safari.
     setIsSafari(
       typeof window !== "undefined" &&
         navigator.userAgent.includes("Safari") &&
@@ -114,12 +112,12 @@ export const WavyBackground = ({
   return (
     <div
       className={cn(
-        "relative flex flex-col items-center justify-center w-full h-full",
+        "h-screen flex flex-col items-center justify-center",
         containerClassName
       )}
     >
       <canvas
-        className="w-full h-full"
+        className="absolute inset-0 z-0"
         ref={canvasRef}
         id="canvas"
         style={{

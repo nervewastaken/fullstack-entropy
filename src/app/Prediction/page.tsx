@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 const Page = () => {
   const [stationData, setStationData] = useState({});
   const [error, setError] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
 
   const stations = ["Admiralty", "Sentosa Island", "Jurong (West)", "Newton"]; // Add more sectors as needed
 
@@ -30,9 +31,12 @@ const Page = () => {
   };
 
   useEffect(() => {
-    stations.forEach((station) => {
-      fetchStationData(station);
-    });
+    const district = localStorage.getItem("District");
+    setSelectedDistrict(district);
+
+    if (district && stations.includes(district)) {
+      fetchStationData(district);
+    }
   }, []);
 
   return (
@@ -41,42 +45,40 @@ const Page = () => {
       {error && (
         <p className="text-red-500 font-semibold">Error: {error.message}</p>
       )}
-      {stations.map((station) => (
-        <div key={station} className="mb-12">
+      {selectedDistrict && stationData[selectedDistrict] ? (
+        <div key={selectedDistrict} className="mb-12">
           <h2 className="text-2xl mb-4 font-semibold">
-            {station} Forecast Data
+            {selectedDistrict} Forecast Data
           </h2>
-          {stationData[station] ? (
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="border p-4 text-left">Year</th>
-                  <th className="border p-4 text-left">Month</th>
-                  <th className="border p-4 text-left">Temperature</th>
-                  <th className="border p-4 text-left">Station</th>
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border p-4 text-left">Year</th>
+                <th className="border p-4 text-left">Month</th>
+                <th className="border p-4 text-left">Temperature</th>
+                <th className="border p-4 text-left">Station</th>
+              </tr>
+            </thead>
+            <tbody>
+              {stationData[selectedDistrict].map((row, index) => (
+                <tr
+                  key={index}
+                  className={`${
+                    index % 2 === 0 ? "bg-gray-100" : "bg-white"
+                  } hover:bg-gray-50`}
+                >
+                  <td className="border p-4">{row.year}</td>
+                  <td className="border p-4">{row.month}</td>
+                  <td className="border p-4">{row.temp}</td>
+                  <td className="border p-4">{row.station}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {stationData[station].map((row, index) => (
-                  <tr
-                    key={index}
-                    className={`${
-                      index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                    } hover:bg-gray-50`}
-                  >
-                    <td className="border p-4">{row.year}</td>
-                    <td className="border p-4">{row.month}</td>
-                    <td className="border p-4">{row.temp}</td>
-                    <td className="border p-4">{row.station}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>Loading data for {station}...</p>
-          )}
+              ))}
+            </tbody>
+          </table>
         </div>
-      ))}
+      ) : (
+        <p>Loading data for {selectedDistrict}...</p>
+      )}
     </div>
   );
 };

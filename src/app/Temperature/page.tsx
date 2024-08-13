@@ -15,21 +15,24 @@ import {
 import moment from "moment";
 
 const Page = () => {
-  const [anomaliesData, setAnomaliesData] = useState({});
+  const [anomaliesData, setAnomaliesData] = useState([]);
   const [error, setError] = useState(null);
+  const [district, setSelectedDistrict] = useState("");
 
-  const sectors = [
-    "Admiralty",
-    "Sentosa Island",
-    "Jurong (West)",
-    "Newton",
-    "Changi",
-  ];
+  useEffect(() => {
+    const selectedDistrict = localStorage.getItem("District");
+    if (selectedDistrict) {
+      setSelectedDistrict(selectedDistrict);
+      fetchStationAnomalies(selectedDistrict);
+    } else {
+      setError("No district selected or invalid district");
+    }
+  }, []);
 
-  const fetchStationAnomalies = async (station) => {
+  const fetchStationAnomalies = async (district) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/get_station_anomalies?station=${station}`
+        `http://localhost:8080/get_station_anomalies?station=${district}`
       );
 
       if (response.ok) {
@@ -38,24 +41,15 @@ const Page = () => {
           ...item,
           date: moment(item.date).format("YYYY-MM-DD"),
         }));
-        setAnomaliesData((prevState) => ({
-          ...prevState,
-          [station]: cleanedData,
-        }));
+        setAnomaliesData(cleanedData);
       } else {
-        console.log("Request failed with status", response.status);
+        throw new Error(`Request failed with status ${response.status}`);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
-      setError(error);
+      console.error("Error fetching anomalies data:", error);
+      setError(error.message);
     }
   };
-
-  useEffect(() => {
-    sectors.forEach((sector) => {
-      fetchStationAnomalies(sector);
-    });
-  }, []);
 
   const renderCustomizedDot = (props) => {
     const { cx, cy, payload } = props;
@@ -94,39 +88,38 @@ const Page = () => {
   };
 
   return (
-    <div>
-      <h1>Temperature Anomalies Across Sectors</h1>
-      {error && <p>Error: {error.message}</p>}
+    <div className="p-8 font-sans">
+      <h1 className="text-3xl text-center mb-8 font-bold">
+        {district} Temperature Anomalies
+      </h1>
+      {error && <p className="text-red-500 font-semibold">Error: {error}</p>}
 
-      {sectors.map((sector) => (
-        <div key={sector}>
-          <h2>{sector} Temperature Anomalies</h2>
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={anomaliesData[sector]}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="date"
-                label={{
-                  value: "Date",
-                  position: "insideBottomRight",
-                  offset: 0,
-                }}
-                tick={false}
-              />
-              <YAxis />
-              <Tooltip content={customTooltip} />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="max_temp"
-                stroke="#8884d8"
-                activeDot={{ r: 8 }}
-                dot={renderCustomizedDot}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      ))}
+      {anomaliesData.length > 0 && (
+        <ResponsiveContainer width="100%" height={400}>
+          <LineChart data={anomaliesData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="date"
+              label={{
+                value: "Date",
+                position: "insideBottomRight",
+                offset: 0,
+              }}
+              tick={false}
+            />
+            <YAxis />
+            <Tooltip content={customTooltip} />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="max_temp"
+              stroke="#8884d8"
+              activeDot={{ r: 8 }}
+              dot={renderCustomizedDot}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 };
