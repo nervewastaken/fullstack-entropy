@@ -1,0 +1,19 @@
+.page-container {
+    position: relative;
+    height: 100vh; /* Full viewport height */
+    overflow: hidden; /* Hide overflow to ensure the oval stays within bounds */
+    background-color: #ffffff; /* Background color for the page */
+  }
+  
+  .oval {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%); /* Center the oval horizontally */
+    width: 100vw; /* Full viewport width */
+    height: 50vh; /* Half viewport height */
+    background: linear-gradient(135deg, #ff6f00, #ffab00); /* Orange-yellow gradient */
+    border-radius: 50%; /* Make it an oval shape */
+    z-index: -1; /* Place it behind other content */
+  }
+  
